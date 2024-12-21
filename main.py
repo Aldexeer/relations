@@ -1,17 +1,14 @@
 import arcade
-import time
 
 # --- Constants ---
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Relationship Simulator"
-SECONDS_IN_HOUR = 1 # Game time will pass this amount of real time seconds
-SECONDS_IN_DAY = 24 * SECONDS_IN_HOUR # Placeholder, seconds in 1 day for testing purposes
+HOURS_IN_DAY = 24
 
-# --- Game Variables (We'll add more later) ---
+# --- Game Variables ---
 current_day = 1  # Start at day 1
-current_time = 8 * SECONDS_IN_HOUR  # Start at 8:00 AM (in seconds for simplicity)
-last_time_update = 0
+current_time = 8  # Start at 8:00 AM (in hours)
 
 # --- Alice's Data (Simplified for now) ---
 alice = {
@@ -19,6 +16,13 @@ alice = {
     "relationship_satisfaction": 70,
     "stress": 30,
 }
+
+# --- Player's Actions ---
+# We will move it in another class later
+class Actions:
+    Work = "Work"
+    Rest = "Rest"
+    Spend_time_with_Alice = "Spend time with Alice"
 
 class MyGame(arcade.Window):
     """
@@ -34,9 +38,6 @@ class MyGame(arcade.Window):
 
     def setup(self):
         """ Set up the game variables. Call to re-start the game. """
-        global last_time_update
-        # Initialize your variables here
-        last_time_update = time.time()
         pass
 
     def on_draw(self):
@@ -46,11 +47,7 @@ class MyGame(arcade.Window):
         self.clear()
 
         # --- Draw the day and time ---
-        # Convert time back to hours and minutes for display
-        hours = current_time // SECONDS_IN_HOUR
-        minutes = (current_time % SECONDS_IN_HOUR) * 60 // SECONDS_IN_HOUR
-        time_text = f"Time: {hours:02d}:{minutes:02d}"
-
+        time_text = f"Time: {current_time:02d}:00"
         day_text = f"Day: {current_day}"
 
         # Parameters: text, x, y, color, font size
@@ -70,20 +67,34 @@ class MyGame(arcade.Window):
         """
         All the logic to move, and the game logic goes here.
         """
-        global current_time, current_day, last_time_update
+        pass  # We'll add time updates and other logic later
 
-        # Get the current real-world time
-        current_real_time = time.time()
+    def on_key_press(self, key, modifiers):
+        """
+        Called whenever a key is pressed.
+        """
+        global current_time, current_day
 
-        # Check if one second has passed in real time
-        if current_real_time - last_time_update >= 1:
-            current_time += SECONDS_IN_HOUR
-            last_time_update = current_real_time
+        # --- Player Actions (for now mapped to keys) ---
+        if key == arcade.key.W:
+            self.advance_time(4, Actions.Work)  # Simulate working for 4 hours
+        elif key == arcade.key.R:
+            self.advance_time(2, Actions.Rest)  # Simulate resting for 2 hours
+        elif key == arcade.key.S:
+            self.advance_time(3, Actions.Spend_time_with_Alice)  # Simulate spending time with Alice for 3 hours
 
-            # Check for a new day
-            if current_time >= SECONDS_IN_DAY:
-                current_day += 1
-                current_time = 8 * SECONDS_IN_HOUR # Reset to 8:00 AM on the new day
+    def advance_time(self, hours, action):
+        """
+        Advances the in-game time based on the action taken.
+        """
+        global current_time, current_day
+        print(f"Player chose to {action} for {hours} hours.")
+        current_time += hours
+
+        # Check for a new day
+        if current_time >= HOURS_IN_DAY:
+            current_day += 1
+            current_time = 8  # Reset to 8:00 AM on the new day
 
 def main():
     """ Main function """
