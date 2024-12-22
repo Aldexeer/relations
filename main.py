@@ -1,4 +1,5 @@
 import arcade
+import arcade.gui
 
 # --- Constants ---
 SCREEN_WIDTH = 800
@@ -18,7 +19,6 @@ alice = {
 }
 
 # --- Player's Actions ---
-# We will move it in another class later
 class Actions:
     Work = "Work"
     Rest = "Rest"
@@ -36,8 +36,48 @@ class MyGame(arcade.Window):
         super().__init__(width, height, title)
         arcade.set_background_color(arcade.color.SKY_BLUE)
 
+        # --- Required for all code that uses UI element,
+        # a UIManager to handle the UI.
+        self.manager = arcade.gui.UIManager()
+        self.manager.enable()
+
+        # Create a vertical BoxGroup to align buttons
+        self.v_box = arcade.gui.UIBoxLayout()
+
+        # Create the buttons
+        work_button = arcade.gui.UIFlatButton(text="Work (4h)", width=200)
+        self.v_box.add(work_button.with_space_around(bottom=20))
+
+        rest_button = arcade.gui.UIFlatButton(text="Rest (2h)", width=200)
+        self.v_box.add(rest_button.with_space_around(bottom=20))
+
+        spend_time_button = arcade.gui.UIFlatButton(text="Spend Time with Alice (3h)", width=200)
+        self.v_box.add(spend_time_button.with_space_around(bottom=20))
+
+        # --- পৃথক ইভেন্ট হ্যান্ডলারের সাথে বোতামগুলিকে সংযুক্ত করুন
+        @work_button.event("on_click")
+        def on_click_work(event):
+            self.advance_time(4, Actions.Work)
+
+        @rest_button.event("on_click")
+        def on_click_rest(event):
+            self.advance_time(2, Actions.Rest)
+
+        @spend_time_button.event("on_click")
+        def on_click_spend_time(event):
+            self.advance_time(3, Actions.Spend_time_with_Alice)
+
+        # Create a widget to hold the v_box widget, that will center the buttons
+        self.manager.add(
+            arcade.gui.UIAnchorWidget(
+                anchor_x="center_x",
+                anchor_y="center_y",
+                child=self.v_box)
+        )
+
     def setup(self):
         """ Set up the game variables. Call to re-start the game. """
+        self.manager.enable()
         pass
 
     def on_draw(self):
@@ -63,25 +103,14 @@ class MyGame(arcade.Window):
         arcade.draw_text(alice_relationship_text, 10, SCREEN_HEIGHT - 115, arcade.color.BLACK, 14)
         arcade.draw_text(alice_stress_text, 10, SCREEN_HEIGHT - 140, arcade.color.BLACK, 14)
 
+        # Draw the GUI
+        self.manager.draw()
+
     def on_update(self, delta_time):
         """
         All the logic to move, and the game logic goes here.
         """
-        pass  # We'll add time updates and other logic later
-
-    def on_key_press(self, key, modifiers):
-        """
-        Called whenever a key is pressed.
-        """
-        global current_time, current_day
-
-        # --- Player Actions (for now mapped to keys) ---
-        if key == arcade.key.W:
-            self.advance_time(4, Actions.Work)  # Simulate working for 4 hours
-        elif key == arcade.key.R:
-            self.advance_time(2, Actions.Rest)  # Simulate resting for 2 hours
-        elif key == arcade.key.S:
-            self.advance_time(3, Actions.Spend_time_with_Alice)  # Simulate spending time with Alice for 3 hours
+        pass
 
     def advance_time(self, hours, action):
         """
@@ -95,6 +124,10 @@ class MyGame(arcade.Window):
         if current_time >= HOURS_IN_DAY:
             current_day += 1
             current_time = 8  # Reset to 8:00 AM on the new day
+
+    def on_key_press(self, key, modifiers):
+      """ We don't need it anymore"""
+      pass
 
 def main():
     """ Main function """
