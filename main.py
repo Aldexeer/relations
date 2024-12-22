@@ -57,7 +57,6 @@ class MyGame(arcade.Window):
     def setup(self):
         """ Set up the game variables. Call to re-start the game. """
         self.manager.enable()
-        pass
 
     def on_draw(self):
         """
@@ -66,39 +65,41 @@ class MyGame(arcade.Window):
         self.clear()
 
         # --- Draw the day and time ---
-        time_text = f"Time: {a.current_time:02d}:00"
-        day_text = f"Day: {a.current_day}"
+        time_text = f"Time: {self.game_logic.current_time:02d}:00"
+        day_text = f"Day: {self.game_logic.current_day}"
 
         # Parameters: text, x, y, color, font size
         arcade.draw_text(day_text, 10, c.SCREEN_HEIGHT - 30, arcade.color.BLACK, 18)
         arcade.draw_text(time_text, 10, c.SCREEN_HEIGHT - 55, arcade.color.BLACK, 18)
 
         # --- Draw Alice's Info ---
-        alice_name_text = f"Name: {a.alice['name']}"
-        alice_relationship_text = f"Relationship Satisfaction: {a.alice['relationship_satisfaction']}"
-        alice_stress_text = f"Stress: {a.alice['stress']}"
+        alice_name_text = f"Name: {self.game_logic.alice.name}"
+        alice_relationship_text = f"Relationship Satisfaction: {self.game_logic.alice.relationship_satisfaction}"
+        alice_stress_text = f"Stress: {self.game_logic.alice.stress}"
+        alice_energy_text = f"Energy: {self.game_logic.alice.energy}"
 
         arcade.draw_text(alice_name_text, 10, c.SCREEN_HEIGHT - 90, arcade.color.BLACK, 14)
         arcade.draw_text(alice_relationship_text, 10, c.SCREEN_HEIGHT - 115, arcade.color.BLACK, 14)
         arcade.draw_text(alice_stress_text, 10, c.SCREEN_HEIGHT - 140, arcade.color.BLACK, 14)
+        arcade.draw_text(alice_energy_text, 10, c.SCREEN_HEIGHT - 165, arcade.color.BLACK, 14)
 
         # --- Draw Player's Info ---
-        player_money_text = f"Money: ${p.player['money']}"
-        player_stress_text = f"Stress: {p.player['stress']}"
-        player_energy_text = f"Energy: {p.player['energy']}"
+        player_money_text = f"Money: ${self.game_logic.player.money}"
+        player_stress_text = f"Stress: {self.game_logic.player.stress}"
+        player_energy_text = f"Energy: {self.game_logic.player.energy}"
 
-        arcade.draw_text(player_money_text, 10, c.SCREEN_HEIGHT - 165, arcade.color.BLACK, 14)
-        arcade.draw_text(player_stress_text, 10, c.SCREEN_HEIGHT - 190, arcade.color.BLACK, 14)
-        arcade.draw_text(player_energy_text, 10, c.SCREEN_HEIGHT - 215, arcade.color.BLACK, 14)
+        arcade.draw_text(player_money_text, 10, c.SCREEN_HEIGHT - 190, arcade.color.BLACK, 14)
+        arcade.draw_text(player_stress_text, 10, c.SCREEN_HEIGHT - 215, arcade.color.BLACK, 14)
+        arcade.draw_text(player_energy_text, 10, c.SCREEN_HEIGHT - 240, arcade.color.BLACK, 14)
 
         # --- Draw Alice's Schedule ---
         schedule_text = "Alice's Schedule:"
-        arcade.draw_text(schedule_text, 10, c.SCREEN_HEIGHT - 240, arcade.color.BLACK, 14)
-        y_offset = 265
-        for i, activity in enumerate(a.alice_schedule):
-            hour = (8 + i) % 24  # Calculate the hour (8 AM + i)
+        arcade.draw_text(schedule_text, 10, c.SCREEN_HEIGHT - 265, arcade.color.BLACK, 14)
+        y_offset = 290
+        for i, activity in enumerate(self.game_logic.alice.schedule):
+            hour = (8 + i) % 24
             am_pm = "AM" if hour < 12 else "PM"
-            hour_12 = hour % 12 if hour % 12 != 0 else 12  # Convert to 12-hour format
+            hour_12 = hour % 12 if hour % 12 != 0 else 12
             activity_text = f"{hour_12} {am_pm}: {activity}"
             arcade.draw_text(activity_text, 10, c.SCREEN_HEIGHT - y_offset, arcade.color.BLACK, 12)
             y_offset += 20
