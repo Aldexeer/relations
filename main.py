@@ -18,6 +18,13 @@ alice = {
     "stress": 30,
 }
 
+# --- Player's Data ---
+player = {
+    "money": 0,
+    "stress": 0,
+    "energy": 100,  # Add an energy attribute
+}
+
 # --- Player's Actions ---
 class Actions:
     Work = "Work"
@@ -77,7 +84,6 @@ class MyGame(arcade.Window):
 
     def setup(self):
         """ Set up the game variables. Call to re-start the game. """
-        self.manager.enable()
         pass
 
     def on_draw(self):
@@ -103,6 +109,15 @@ class MyGame(arcade.Window):
         arcade.draw_text(alice_relationship_text, 10, SCREEN_HEIGHT - 115, arcade.color.BLACK, 14)
         arcade.draw_text(alice_stress_text, 10, SCREEN_HEIGHT - 140, arcade.color.BLACK, 14)
 
+        # --- Draw Player's Info ---
+        player_money_text = f"Money: ${player['money']}"
+        player_stress_text = f"Stress: {player['stress']}"
+        player_energy_text = f"Energy: {player['energy']}"
+
+        arcade.draw_text(player_money_text, 10, SCREEN_HEIGHT - 165, arcade.color.BLACK, 14)
+        arcade.draw_text(player_stress_text, 10, SCREEN_HEIGHT - 190, arcade.color.BLACK, 14)
+        arcade.draw_text(player_energy_text, 10, SCREEN_HEIGHT - 215, arcade.color.BLACK, 14)
+
         # Draw the GUI
         self.manager.draw()
 
@@ -118,6 +133,31 @@ class MyGame(arcade.Window):
         """
         global current_time, current_day
         print(f"Player chose to {action} for {hours} hours.")
+
+        # --- Update Player Attributes Based on Action ---
+        if action == Actions.Work:
+            player["money"] += 15 * hours  # Earn $15 per hour worked
+            player["stress"] += 5 * hours  # Increase stress
+            player["energy"] -= 10 * hours # Decrease energy
+        elif action == Actions.Rest:
+            player["stress"] -= 3 * hours  # Decrease stress
+            player["energy"] += 8 * hours  # Increase energy
+        elif action == Actions.Spend_time_with_Alice:
+            alice["relationship_satisfaction"] += 5 * hours
+            player["stress"] -= 2 * hours # Decrease stress (spending time with Alice is relaxing)
+            player["energy"] -= 4 * hours
+
+        # --- Basic Attribute Clamping ---
+        if player["stress"] > 100:
+            player["stress"] = 100
+        if player["stress"] < 0:
+            player["stress"] = 0
+        if player["energy"] > 100:
+            player["energy"] = 100
+        if player["energy"] < 0:
+            player["energy"] = 0
+
+        # --- Advance Time ---
         current_time += hours
 
         # Check for a new day
