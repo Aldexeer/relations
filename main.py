@@ -11,18 +11,20 @@ HOURS_IN_DAY = 24
 current_day = 1  # Start at day 1
 current_time = 8  # Start at 8:00 AM (in hours)
 
-# --- Alice's Data (Simplified for now) ---
+# --- Alice's Data ---
 alice = {
     "name": "Alice",
     "relationship_satisfaction": 70,
     "stress": 30,
+    "energy": 100,
+    "hobby": "Painting",  # Add a hobby
 }
 
 # --- Player's Data ---
 player = {
     "money": 0,
     "stress": 0,
-    "energy": 100,  # Add an energy attribute
+    "energy": 100,
 }
 
 # --- Player's Actions ---
@@ -31,11 +33,42 @@ class Actions:
     Rest = "Rest"
     Spend_time_with_Alice = "Spend time with Alice"
 
-class MyGame(arcade.Window):
-    """
-    Main application class.
-    """
+# --- Alice's Activities ---
+class AliceActions:
+    Work_Part_Time = "Work Part-time"
+    Relax = "Relax"
+    Pursue_Hobby = "Pursue Hobby"
+    Spend_Time_with_Player = "Spend Time with Player"
 
+# --- Alice's Daily Schedule (Fixed for now) ---
+alice_schedule = [
+    AliceActions.Work_Part_Time,  # 8 AM
+    AliceActions.Work_Part_Time,  # 9 AM
+    AliceActions.Work_Part_Time,  # 10 AM
+    AliceActions.Work_Part_Time,  # 11 AM
+    AliceActions.Pursue_Hobby,    # 12 PM
+    AliceActions.Relax,           # 1 PM
+    AliceActions.Relax,           # 2 PM
+    AliceActions.Pursue_Hobby,    # 3 PM
+    AliceActions.Relax,           # 4 PM
+    AliceActions.Relax,           # 5 PM
+    AliceActions.Relax,           # 6 PM
+    AliceActions.Relax,           # 7 PM
+    AliceActions.Relax,           # 8 PM
+    AliceActions.Relax,           # 9 PM
+    AliceActions.Relax,           # 10 PM
+    AliceActions.Relax,           # 11 PM
+    AliceActions.Relax,           # 12 AM
+    AliceActions.Relax,           # 1 AM
+    AliceActions.Relax,           # 2 AM
+    AliceActions.Relax,           # 3 AM
+    AliceActions.Relax,           # 4 AM
+    AliceActions.Relax,           # 5 AM
+    AliceActions.Relax,           # 6 AM
+    AliceActions.Relax,           # 7 AM
+]
+
+class MyGame(arcade.Window):
     def __init__(self, width, height, title):
         """
         Initializer
@@ -84,6 +117,7 @@ class MyGame(arcade.Window):
 
     def setup(self):
         """ Set up the game variables. Call to re-start the game. """
+        self.manager.enable()
         pass
 
     def on_draw(self):
@@ -117,6 +151,18 @@ class MyGame(arcade.Window):
         arcade.draw_text(player_money_text, 10, SCREEN_HEIGHT - 165, arcade.color.BLACK, 14)
         arcade.draw_text(player_stress_text, 10, SCREEN_HEIGHT - 190, arcade.color.BLACK, 14)
         arcade.draw_text(player_energy_text, 10, SCREEN_HEIGHT - 215, arcade.color.BLACK, 14)
+
+        # --- Draw Alice's Schedule ---
+        schedule_text = "Alice's Schedule:"
+        arcade.draw_text(schedule_text, 10, SCREEN_HEIGHT - 240, arcade.color.BLACK, 14)
+        y_offset = 265
+        for i, activity in enumerate(alice_schedule):
+            hour = (8 + i) % 24  # Calculate the hour (8 AM + i)
+            am_pm = "AM" if hour < 12 else "PM"
+            hour_12 = hour % 12 if hour % 12 != 0 else 12  # Convert to 12-hour format
+            activity_text = f"{hour_12} {am_pm}: {activity}"
+            arcade.draw_text(activity_text, 10, SCREEN_HEIGHT - y_offset, arcade.color.BLACK, 12)
+            y_offset += 20
 
         # Draw the GUI
         self.manager.draw()
@@ -157,13 +203,37 @@ class MyGame(arcade.Window):
         if player["energy"] < 0:
             player["energy"] = 0
 
-        # --- Advance Time ---
-        current_time += hours
+        # --- Update Alice's Attributes Based on Her Schedule ---
+        for _ in range(hours):
+          alice_current_activity = alice_schedule[current_time]
+          if alice_current_activity == AliceActions.Work_Part_Time:
+              alice["stress"] += 3  # Working part-time increases stress
+              alice["energy"] -= 5 # Decrease energy
+          elif alice_current_activity == AliceActions.Relax:
+              alice["stress"] -= 2  # Relaxing decreases stress
+              alice["energy"] += 5  # Increase energy
+          elif alice_current_activity == AliceActions.Pursue_Hobby:
+              alice["stress"] -= 4  # Pursuing a hobby is relaxing
+              alice["energy"] -= 2 # Decrease energy
+          elif alice_current_activity == AliceActions.Spend_Time_with_Player:
+              pass  # We already handle this in the player's actions
 
-        # Check for a new day
-        if current_time >= HOURS_IN_DAY:
-            current_day += 1
-            current_time = 8  # Reset to 8:00 AM on the new day
+          # --- Basic Attribute Clamping for Alice ---
+          if alice["stress"] > 100:
+              alice["stress"] = 100
+          if alice["stress"] < 0:
+              alice["stress"] = 0
+          if alice["energy"] > 100:
+              alice["energy"] = 100
+          if alice["energy"] < 0:
+              alice["energy"] = 0
+
+          # --- Advance Time ---
+          current_time += 1
+          # Check for a new day
+          if current_time >= HOURS_IN_DAY:
+              current_day += 1
+              current_time = 8  # Reset to 8:00 AM on the new day
 
     def on_key_press(self, key, modifiers):
       """ We don't need it anymore"""
