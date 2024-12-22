@@ -10,6 +10,12 @@ class Player(Character):
         self.relationship = {
             "Alice": 0
         }
+        self.skills = {
+            "programming": 0,
+            "game_design": 0,
+            "web_development": 0
+        }
+        self.fitness = 0
 
     def update_relationship(self, character_name, change):
         if character_name in self.relationship:
@@ -30,8 +36,9 @@ def update_player(game_logic, hours, action):
     """Updates the player's attributes based on the action taken."""
     player = game_logic.player
     if action == Actions.Work:
-        player.update_attributes({"money": 15 * hours, "stress": 5 * hours, "energy": -10 * hours})
-        player.job = "Programmer" # temporary
+        player.update_attributes({"money": 15 * hours, "stress": 5 * hours, "energy": -10 * hours, "skills": {"programming": 1, "game_design": 1}})
+        if player.job == "":
+            player.job = "Programmer" # temporary
     elif action == Actions.Rest:
         player.update_attributes({"stress": -3 * hours, "energy": 8 * hours})
     elif action == Actions.Spend_time_with_Alice:

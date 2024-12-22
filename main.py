@@ -31,7 +31,7 @@ class MyGame(arcade.Window):
         spend_time_button = arcade.gui.UIFlatButton(text="Spend Time with Alice (3h)", width=200)
         self.v_box.add(spend_time_button.with_space_around(bottom=20))
 
-        # --- পৃথক ইভেন্ট হ্যান্ডলারের সাথে বোতামগুলিকে সংযুক্ত করুন
+        # --- Button event handlers ---
         @work_button.event("on_click")
         def on_click_work(event):
             self.game_logic.advance_time(4, p.Actions.Work)
@@ -77,20 +77,24 @@ class MyGame(arcade.Window):
         alice_relationship_text = f"Relationship Satisfaction: {self.game_logic.alice.relationship_satisfaction}"
         alice_stress_text = f"Stress: {self.game_logic.alice.stress}"
         alice_energy_text = f"Energy: {self.game_logic.alice.energy}"
+        alice_current_activity_text = f"Current Activity: {self.game_logic.alice.schedule[self.game_logic.current_time - 8]}"
 
         arcade.draw_text(alice_name_text, 10, c.SCREEN_HEIGHT - 90, arcade.color.BLACK, 14)
         arcade.draw_text(alice_relationship_text, 10, c.SCREEN_HEIGHT - 115, arcade.color.BLACK, 14)
         arcade.draw_text(alice_stress_text, 10, c.SCREEN_HEIGHT - 140, arcade.color.BLACK, 14)
         arcade.draw_text(alice_energy_text, 10, c.SCREEN_HEIGHT - 165, arcade.color.BLACK, 14)
+        arcade.draw_text(alice_current_activity_text, 10, c.SCREEN_HEIGHT - 190, arcade.color.BLACK, 14)
 
         # --- Draw Player's Info ---
         player_money_text = f"Money: ${self.game_logic.player.money}"
         player_stress_text = f"Stress: {self.game_logic.player.stress}"
         player_energy_text = f"Energy: {self.game_logic.player.energy}"
+        player_job_text = f"Job: {self.game_logic.player.job}"
 
-        arcade.draw_text(player_money_text, 10, c.SCREEN_HEIGHT - 190, arcade.color.BLACK, 14)
-        arcade.draw_text(player_stress_text, 10, c.SCREEN_HEIGHT - 215, arcade.color.BLACK, 14)
-        arcade.draw_text(player_energy_text, 10, c.SCREEN_HEIGHT - 240, arcade.color.BLACK, 14)
+        arcade.draw_text(player_money_text, 310, c.SCREEN_HEIGHT - 90, arcade.color.BLACK, 14)
+        arcade.draw_text(player_stress_text, 310, c.SCREEN_HEIGHT - 115, arcade.color.BLACK, 14)
+        arcade.draw_text(player_energy_text, 310, c.SCREEN_HEIGHT - 140, arcade.color.BLACK, 14)
+        arcade.draw_text(player_job_text, 310, c.SCREEN_HEIGHT - 165, arcade.color.BLACK, 14)
 
         # --- Draw Alice's Schedule ---
         schedule_text = "Alice's Schedule:"
@@ -100,7 +104,7 @@ class MyGame(arcade.Window):
             hour = (8 + i) % 24
             am_pm = "AM" if hour < 12 else "PM"
             hour_12 = hour % 12 if hour % 12 != 0 else 12
-            activity_text = f"{hour_12} {am_pm}: {activity}"
+            activity_text = f"{hour_12:02d} {am_pm}: {activity}"
             arcade.draw_text(activity_text, 10, c.SCREEN_HEIGHT - y_offset, arcade.color.BLACK, 12)
             y_offset += 20
 

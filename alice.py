@@ -76,4 +76,4 @@ def update_alice(game_logic, hours, action):
         if current_time > c.HOURS_IN_DAY:
             current_time = current_time - c.HOURS_IN_DAY
 
-    # game_logic.current_time = current_time # This line is removed
+    game_logic.current_time = current_time
