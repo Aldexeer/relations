@@ -17,10 +17,10 @@ class GameLogic:
         print(f"Player chose to {action} for {hours} hours.")
 
         # --- Update Player Attributes Based on Action ---
-        p.update_player(self, hours, action) # Update player
+        p.update_player(self, hours, action)
 
         # --- Update Alice's Attributes Based on Her Schedule ---
-        a.update_alice(self, hours, action) # Update alice
+        a.update_alice(self, hours, action)
 
         self.current_time += hours # Update time after updating the attributes
 
@@ -28,3 +28,5 @@ class GameLogic:
         if self.current_time >= c.HOURS_IN_DAY:
             self.current_day += 1
             self.current_time = 8  # Reset to 8:00 AM on the new day
+            if self.current_time > c.HOURS_IN_DAY: # added condition
+                self.current_time = self.current_time - c.HOURS_IN_DAY # added current time update

@@ -55,7 +55,7 @@ def update_alice(game_logic, hours, action):
         elif alice_current_activity == AliceActions.Pursue_Hobby:
             game_logic.alice.update_attributes({"stress": -4, "energy": -2})
         elif alice_current_activity == AliceActions.Spend_Time_with_Player:
-            if action == p.Actions.Spend_Time_with_Player:
+            if action == p.Actions.Spend_time_with_Alice:
                 game_logic.alice.relationship_satisfaction += 5
 
         # --- Basic Attribute Clamping for Alice ---
