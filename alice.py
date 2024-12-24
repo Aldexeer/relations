@@ -27,12 +27,12 @@ class Alice(Character):
             AliceActions.Relax,           # 10 PM
             AliceActions.Relax,           # 11 PM
             AliceActions.Relax,           # 12 AM
-            AliceActions.Relax,           # 1 AM
-            AliceActions.Relax,           # 2 AM
-            AliceActions.Relax,           # 3 AM
-            AliceActions.Relax,           # 4 AM
-            AliceActions.Relax,           # 5 AM
-            AliceActions.Relax,           # 6 AM
+            AliceActions.Go_for_a_Walk,   # 1 AM
+            AliceActions.Go_for_a_Walk,   # 2 AM
+            AliceActions.Read_a_Book,     # 3 AM
+            AliceActions.Read_a_Book,     # 4 AM
+            AliceActions.Read_a_Book,     # 5 AM
+            AliceActions.Meet_with_Friends, # 6 AM
             AliceActions.Spend_Time_with_Player,  # 7 AM
         ]
 
@@ -41,6 +41,9 @@ class AliceActions:
     Relax = "Relax"
     Pursue_Hobby = "Pursue Hobby"
     Spend_Time_with_Player = "Spend Time with Player"
+    Read_a_Book = "Read a Book"
+    Go_for_a_Walk = "Go for a Walk"
+    Meet_with_Friends = "Meet with Friends"
 
 def update_alice(game_logic, hours, action):
     """Updates Alice's attributes based on her schedule."""
@@ -57,6 +60,12 @@ def update_alice(game_logic, hours, action):
         elif alice_current_activity == AliceActions.Spend_Time_with_Player:
             if action == p.Actions.Spend_time_with_Alice:
                 game_logic.alice.relationship_satisfaction += 5
+        elif alice_current_activity == AliceActions.Read_a_Book:
+            game_logic.alice.update_attributes({"stress": -4, "energy": 1, "skills": {"communication": 1}})
+        elif alice_current_activity == AliceActions.Go_for_a_Walk:
+            game_logic.alice.update_attributes({"stress": -3, "energy": -1, "emotions": {"happiness": 2}})
+        elif alice_current_activity == AliceActions.Meet_with_Friends:
+            game_logic.alice.update_attributes({"stress": -4, "energy": -3, "emotions": {"happiness": 3, "trust": 2}})
 
         # --- Basic Attribute Clamping for Alice ---
         if game_logic.alice.stress > 100:

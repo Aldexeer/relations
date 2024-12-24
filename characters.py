@@ -34,7 +34,7 @@ class Character:
     def update_attributes(self, changes):
         """Updates the character's attributes based on the given changes."""
         for attribute, change in changes.items():
-            if attribute in ["stress", "energy", "relationship_satisfaction"]:
+            if attribute in ["stress", "energy", "relationship_satisfaction", "fitness"]:
                 setattr(self, attribute, getattr(self, attribute) + change)
 
                 # Basic attribute clamping

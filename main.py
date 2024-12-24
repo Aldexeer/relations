@@ -18,18 +18,32 @@ class MyGame(arcade.Window):
         self.manager = arcade.gui.UIManager()
         self.manager.enable()
 
-        # Create a vertical BoxGroup to align buttons
-        self.v_box = arcade.gui.UIBoxLayout()
+        # Create Vertical BoxGroups
+        self.v_box_left = arcade.gui.UIBoxLayout()
+        self.v_box_right = arcade.gui.UIBoxLayout()
 
-        # Create the buttons
+        # Create the buttons for the left side
         work_button = arcade.gui.UIFlatButton(text="Work (4h)", width=200)
-        self.v_box.add(work_button.with_space_around(bottom=20))
+        self.v_box_left.add(work_button.with_space_around(bottom=20))
 
         rest_button = arcade.gui.UIFlatButton(text="Rest (2h)", width=200)
-        self.v_box.add(rest_button.with_space_around(bottom=20))
+        self.v_box_left.add(rest_button.with_space_around(bottom=20))
 
         spend_time_button = arcade.gui.UIFlatButton(text="Spend Time with Alice (3h)", width=200)
-        self.v_box.add(spend_time_button.with_space_around(bottom=20))
+        self.v_box_left.add(spend_time_button.with_space_around(bottom=20))
+
+        study_button = arcade.gui.UIFlatButton(text="Study (2h)", width=200)
+        self.v_box_left.add(study_button.with_space_around(bottom=20))
+
+        # Create the buttons for the right side
+        gym_button = arcade.gui.UIFlatButton(text="Go to the Gym (1h)", width=200)
+        self.v_box_right.add(gym_button.with_space_around(bottom=20))
+
+        socialize_button = arcade.gui.UIFlatButton(text="Socialize (3h)", width=200)
+        self.v_box_right.add(socialize_button.with_space_around(bottom=20))
+
+        part_time_job_button = arcade.gui.UIFlatButton(text="Part-time Job (4h)", width=200)
+        self.v_box_right.add(part_time_job_button.with_space_around(bottom=20))
 
         # --- Button event handlers ---
         @work_button.event("on_click")
@@ -44,12 +58,33 @@ class MyGame(arcade.Window):
         def on_click_spend_time(event):
             self.game_logic.advance_time(3, p.Actions.Spend_time_with_Alice)
 
-        # Create a widget to hold the v_box widget, that will center the buttons
+        @study_button.event("on_click")
+        def on_click_study(event):
+            self.game_logic.advance_time(2, p.Actions.Study)
+
+        @gym_button.event("on_click")
+        def on_click_gym(event):
+            self.game_logic.advance_time(1, p.Actions.Go_to_the_Gym)
+
+        @socialize_button.event("on_click")
+        def on_click_socialize(event):
+            self.game_logic.advance_time(3, p.Actions.Socialize)
+
+        @part_time_job_button.event("on_click")
+        def on_click_part_time_job(event):
+            self.game_logic.advance_time(4, p.Actions.Part_time_Job)
+
+        # Create a horizontal BoxGroup to align the vertical boxes
+        hbox = arcade.gui.UIBoxLayout(vertical=False)
+        hbox.add(self.v_box_left.with_space_around(right=20))  # Add space between the boxes
+        hbox.add(self.v_box_right)
+
+        # Create a widget to hold the hbox layout, that will center the buttons
         self.manager.add(
             arcade.gui.UIAnchorWidget(
                 anchor_x="center_x",
                 anchor_y="center_y",
-                child=self.v_box)
+                child=hbox)
         )
 
         self.game_logic = gl.GameLogic(self)
@@ -90,11 +125,13 @@ class MyGame(arcade.Window):
         player_stress_text = f"Stress: {self.game_logic.player.stress}"
         player_energy_text = f"Energy: {self.game_logic.player.energy}"
         player_job_text = f"Job: {self.game_logic.player.job}"
+        player_fitness_text = f"Fitness: {self.game_logic.player.fitness}"
 
         arcade.draw_text(player_money_text, 310, c.SCREEN_HEIGHT - 90, arcade.color.BLACK, 14)
         arcade.draw_text(player_stress_text, 310, c.SCREEN_HEIGHT - 115, arcade.color.BLACK, 14)
         arcade.draw_text(player_energy_text, 310, c.SCREEN_HEIGHT - 140, arcade.color.BLACK, 14)
         arcade.draw_text(player_job_text, 310, c.SCREEN_HEIGHT - 165, arcade.color.BLACK, 14)
+        arcade.draw_text(player_fitness_text, 310, c.SCREEN_HEIGHT - 190, arcade.color.BLACK, 14)
 
         # --- Draw Alice's Schedule ---
         schedule_text = "Alice's Schedule:"
